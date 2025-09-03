@@ -2,7 +2,7 @@ package Labb1;
 
 public class Main{
 
-    public class Array {
+    public static class Array {
         Array prev;
         int height;
         Node root;
@@ -14,18 +14,18 @@ public class Main{
 
         }
 
-        public Array newArray(){
+        public static Array newArray(){
             return new Array(null, 0, null);
 
         }
 
-        public void set(Array a, int i, int value){
+        public Array set(Array a, int i, int value){
 
             if (i < 0){
-                return;
+                return null;
             }
 
-        Array newArray = this.newArray();
+        Array newArray = newArray();
         newArray.prev = a;
         newArray.height = a.height;
 
@@ -37,11 +37,12 @@ public class Main{
             int count = (int)(Math.ceil(Math.log(i+1))) - a.height;
             newArray.root = this.increaseHeight(a.root, count);
             newArray.height = a.height + count;
-            recursive(newArray.root, i, newArray.height);
+            recursive(newArray.root, i, newArray.height, value);
         } else {
             recursiveChange(newArray.root, a.root, i, newArray.height, value);
         }
 
+        return newArray;
 
         }
 
@@ -53,13 +54,15 @@ public class Main{
             int bit = (1<<height) & i;
             if (bit == 1){
                 current.right = new Node(null, null, 0);
-                return recursive(current.right, i, height-1);
+                recursive(current.right, i, height-1, value);
             } else {
                 current.left = new Node(null, null, 0);
-                return recursive(current.left, i, height-1);
+                recursive(current.left, i, height-1, value);
             }
+            return;
         }
         private void recursiveChange(Node current, Node old, int i, int height, int value){
+            System.out.println(height);
             if (height == 0){
                 current.value = value;
                 return;
@@ -90,6 +93,7 @@ public class Main{
         }
 
         private int recursiveGet(Node current, int i, int height){
+
             if (height == 0){
                 return current.value;
             }
@@ -137,8 +141,12 @@ public class Main{
     }
 
     public static void main(String[] args){
-        Array a = newArray();
+        Array a = Array.newArray();
+        Array b = Array.newArray();
+        Array c = a.set(b, 5,42);
+        System.out.println(a.get(c,5));
+        Array d = a.set(c, 1, 10);
+        System.out.println(a.get(d, 1));
     }
-
     
 }
