@@ -1,5 +1,7 @@
 package Labb1;
 
+import java.util.Scanner;
+
 public class Main{
 
     public static class Array {
@@ -19,6 +21,19 @@ public class Main{
 
         }
 
+        public void printLeaves(Node node) {
+            if (node == null) return;
+        
+            // Löv är noder utan barn
+            if (node.left == null && node.right == null) {
+                System.out.println(node.value);
+            } else {
+                // Rekursivt besök vänster och höger
+                if (node.left != null) printLeaves(node.left);
+                if (node.right != null) printLeaves(node.right);
+            }
+        }
+
         public Array set(Array a, int i, int value){
 
             if (i < 0){
@@ -28,17 +43,17 @@ public class Main{
         Array newArray = newArray();
         newArray.prev = a;
         newArray.height = a.height;
+        System.err.println(a.height);
 
-        if(a.root == null){
-            newArray.root = new Node(null, null, 0);
-        }
+        
 
         if (Math.pow(2, a.height) <= i){
-            int count = (int)(Math.ceil(Math.log(i+1))) - a.height;
+            int count = (int)(Math.ceil(Math.log(i+1)/Math.log(2))) - a.height;
             newArray.root = this.increaseHeight(a.root, count);
             newArray.height = a.height + count;
             recursive(newArray.root, i, newArray.height, value);
         } else {
+            newArray.root = new Node(null, null, 0);
             recursiveChange(newArray.root, a.root, i, newArray.height, value);
         }
 
@@ -51,8 +66,8 @@ public class Main{
                 current.value = value;
                 return;
             }
-            int bit = (1<<height) & i;
-            if (bit == 1){
+            int bit = (1<<height - 1) & i;
+            if (bit != 0){
                 current.right = new Node(null, null, 0);
                 recursive(current.right, i, height-1, value);
             } else {
@@ -62,13 +77,12 @@ public class Main{
             return;
         }
         private void recursiveChange(Node current, Node old, int i, int height, int value){
-            System.out.println(height);
             if (height == 0){
                 current.value = value;
                 return;
             }
-            int bit = (1<<height) & i;
-            if (bit == 1){
+            int bit = (1<<height - 1) & i;
+            if (bit != 0){
                 current.right = new Node(null, null, 0);
                 current.left = old.left;
                 if (old.right == null){
@@ -89,6 +103,9 @@ public class Main{
         }
 
         public int get(Array a, int i){
+            if (i > Math.pow(2,a.height) -1 ){
+                return 0;
+            }
            return recursiveGet(a.root, i, a.height);
         }
 
@@ -97,8 +114,8 @@ public class Main{
             if (height == 0){
                 return current.value;
             }
-            int bit = (1<<height) & i;
-            if (bit == 1){
+            int bit = (1<<height-1) & i;
+            if (bit != 0){
                 if (current.right == null){
                     return 0;
                 }
@@ -141,12 +158,43 @@ public class Main{
     }
 
     public static void main(String[] args){
-        Array a = Array.newArray();
-        Array b = Array.newArray();
-        Array c = a.set(b, 5,42);
-        System.out.println(a.get(c,5));
-        Array d = a.set(c, 1, 10);
-        System.out.println(a.get(d, 1));
+        Array aInstance = Array.newArray();
+        Array a = aInstance;
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()){
+            String line = sc.nextLine().trim();
+            if (line.isEmpty()) continue;
+
+            String[] parts = line.split(" ");
+
+            switch(parts[0]){
+                case "set":
+                    int i = Integer.parseInt(parts[1]);
+                    int value = Integer.parseInt(parts[2]);
+                    a = a.set(a, i, value);
+                    break;
+
+                case "get":
+                    int indexGet = Integer.parseInt(parts[1]);
+                    int val = a.get(a, indexGet);
+                    System.out.println(val);
+                    a.printLeaves(a.root);
+                    break;
+
+                case "unset":
+                    a = a.prev;
+                    if (a == null) {
+                        a = aInstance;
+                    }
+                    break;
+
+                default:
+                    System.out.println("Okänt kommando: " + line);
+                    break;
+            }
+        }
+
+        sc.close();
     }
     
 }
