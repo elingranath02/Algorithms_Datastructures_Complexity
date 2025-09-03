@@ -24,11 +24,9 @@ public class Main{
         public void printLeaves(Node node) {
             if (node == null) return;
         
-            // Löv är noder utan barn
             if (node.left == null && node.right == null) {
                 System.out.println(node.value);
             } else {
-                // Rekursivt besök vänster och höger
                 if (node.left != null) printLeaves(node.left);
                 if (node.right != null) printLeaves(node.right);
             }
