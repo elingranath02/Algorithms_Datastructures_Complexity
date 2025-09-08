@@ -41,7 +41,6 @@ public class Main{
         Array newArray = newArray();
         newArray.prev = a;
         newArray.height = a.height;
-        System.err.println(a.height);
 
         
 
@@ -184,6 +183,10 @@ public class Main{
                     if (a == null) {
                         a = aInstance;
                     }
+                    break;
+
+                case "print":
+                    a.printLeaves(a.root);
                     break;
 
                 default:
