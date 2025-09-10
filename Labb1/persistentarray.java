@@ -2,7 +2,7 @@ package Labb1;
 
 import java.util.Scanner;
 
-public class Main{
+public class persistentarray{
 
     public static class Array {
         Array prev;
@@ -48,17 +48,17 @@ public class Main{
             int count = (int)(Math.ceil(Math.log(i+1)/Math.log(2))) - a.height;
             newArray.root = this.increaseHeight(a.root, count);
             newArray.height = a.height + count;
-            recursive(newArray.root, i, newArray.height, value);
+            createNodes(newArray.root, i, newArray.height, value);
         } else {
             newArray.root = new Node(null, null, 0);
-            recursiveChange(newArray.root, a.root, i, newArray.height, value);
+            updateTree(newArray.root, a.root, i, newArray.height, value);
         }
 
         return newArray;
 
         }
 
-        private void recursive(Node current, int i, int height, int value){
+        private void createNodes(Node current, int i, int height, int value){
             if (height == 0){
                 current.value = value;
                 return;
@@ -66,14 +66,14 @@ public class Main{
             int bit = (1<<height - 1) & i;
             if (bit != 0){
                 current.right = new Node(null, null, 0);
-                recursive(current.right, i, height-1, value);
+                createNodes(current.right, i, height-1, value);
             } else {
                 current.left = new Node(null, null, 0);
-                recursive(current.left, i, height-1, value);
+                createNodes(current.left, i, height-1, value);
             }
             return;
         }
-        private void recursiveChange(Node current, Node old, int i, int height, int value){
+        private void updateTree(Node current, Node old, int i, int height, int value){
             if (height == 0){
                 current.value = value;
                 return;
@@ -83,17 +83,17 @@ public class Main{
                 current.right = new Node(null, null, 0);
                 current.left = old.left;
                 if (old.right == null){
-                    recursive(current.right, i, height-1, value);
+                    createNodes(current.right, i, height-1, value);
                 } else {
-                    recursiveChange(current.right, old.right, i, height-1, value);
+                    updateTree(current.right, old.right, i, height-1, value);
                 }
             } else {
                 current.left = new Node(null, null, 0);
                 current.right = old.right;
                 if (old.left == null){
-                    recursive(current.left, i, height-1, value);
+                    createNodes(current.left, i, height-1, value);
                 } else {
-                    recursiveChange(current.left, old.left, i, height-1, value);
+                    updateTree(current.left, old.left, i, height-1, value);
                 }
             }
             return;
@@ -103,7 +103,7 @@ public class Main{
             if (i > Math.pow(2,a.height) -1 ){
                 return 0;
             }
-           return recursiveGet(a.root, i, a.height);
+            return recursiveGet(a.root, i, a.height);
         }
 
         private int recursiveGet(Node current, int i, int height){
@@ -175,7 +175,6 @@ public class Main{
                     int indexGet = Integer.parseInt(parts[1]);
                     int val = a.get(a, indexGet);
                     System.out.println(val);
-                    a.printLeaves(a.root);
                     break;
 
                 case "unset":
