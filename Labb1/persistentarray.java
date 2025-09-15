@@ -21,6 +21,16 @@ public class persistentarray{
 
         }
 
+        public void printLeaves(Node node) {
+            if (node == null) return;
+        
+            if (node.left == null && node.right == null) {
+                System.out.println(node.value);
+            } else {
+                if (node.left != null) printLeaves(node.left);
+                if (node.right != null) printLeaves(node.right);
+            }
+        }
 
         public Array set(Array a, int i, int value){
 
@@ -32,21 +42,23 @@ public class persistentarray{
         newArray.prev = a;
         newArray.height = a.height;
 
+        
+
         if (Math.pow(2, a.height) <= i){
             int count = (int)(Math.ceil(Math.log(i+1)/Math.log(2))) - a.height;
             newArray.root = this.increaseHeight(a.root, count);
             newArray.height = a.height + count;
-            recursive(newArray.root, i, newArray.height, value);
+            createNodes(newArray.root, i, newArray.height, value);
         } else {
             newArray.root = new Node(null, null, 0);
-            recursiveChange(newArray.root, a.root, i, newArray.height, value);
+            updateTree(newArray.root, a.root, i, newArray.height, value);
         }
 
         return newArray;
 
         }
 
-        private void recursive(Node current, int i, int height, int value){
+        private void createNodes(Node current, int i, int height, int value){
             if (height == 0){
                 current.value = value;
                 return;
@@ -54,14 +66,14 @@ public class persistentarray{
             int bit = (1<<height - 1) & i;
             if (bit != 0){
                 current.right = new Node(null, null, 0);
-                recursive(current.right, i, height-1, value);
+                createNodes(current.right, i, height-1, value);
             } else {
                 current.left = new Node(null, null, 0);
-                recursive(current.left, i, height-1, value);
+                createNodes(current.left, i, height-1, value);
             }
             return;
         }
-        private void recursiveChange(Node current, Node old, int i, int height, int value){
+        private void updateTree(Node current, Node old, int i, int height, int value){
             if (height == 0){
                 current.value = value;
                 return;
@@ -71,17 +83,17 @@ public class persistentarray{
                 current.right = new Node(null, null, 0);
                 current.left = old.left;
                 if (old.right == null){
-                    recursive(current.right, i, height-1, value);
+                    createNodes(current.right, i, height-1, value);
                 } else {
-                    recursiveChange(current.right, old.right, i, height-1, value);
+                    updateTree(current.right, old.right, i, height-1, value);
                 }
             } else {
                 current.left = new Node(null, null, 0);
                 current.right = old.right;
                 if (old.left == null){
-                    recursive(current.left, i, height-1, value);
+                    createNodes(current.left, i, height-1, value);
                 } else {
-                    recursiveChange(current.left, old.left, i, height-1, value);
+                    updateTree(current.left, old.left, i, height-1, value);
                 }
             }
             return;
@@ -91,7 +103,7 @@ public class persistentarray{
             if (i > Math.pow(2,a.height) -1 ){
                 return 0;
             }
-           return recursiveGet(a.root, i, a.height);
+            return recursiveGet(a.root, i, a.height);
         }
 
         private int recursiveGet(Node current, int i, int height){
@@ -170,6 +182,10 @@ public class persistentarray{
                     if (a == null) {
                         a = aInstance;
                     }
+                    break;
+
+                case "print":
+                    a.printLeaves(a.root);
                     break;
 
                 default:
