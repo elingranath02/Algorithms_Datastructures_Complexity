@@ -10,19 +10,34 @@ public class ClosestWords {
   int closestDistance = -1;
 
   int partDist(String w1, String w2, int w1len, int w2len) {
-    if (w1len == 0)
+    if (w1len == 0){
       return w2len;
-    if (w2len == 0)
+    }
+    if (w2len == 0){
       return w1len;
-    int res = partDist(w1, w2, w1len - 1, w2len - 1) + 
-	(w1.charAt(w1len - 1) == w2.charAt(w2len - 1) ? 0 : 1);
-    int addLetter = partDist(w1, w2, w1len - 1, w2len) + 1;
-    if (addLetter < res)
-      res = addLetter;
-    int deleteLetter = partDist(w1, w2, w1len, w2len - 1) + 1;
-    if (deleteLetter < res)
-      res = deleteLetter;
-    return res;
+    }
+    int[][] M = new int[w1len+1][w2len+1];
+    for (int i = 0; i <= w1len; i++) {
+      M[i][0] = i;
+    }
+    for (int i = 0; i <= w2len; i++) {
+      M[0][i] = i;
+    }
+    for (int i = 1; i <= w1len; i++){
+      for (int j = 1; j <= w2len; j++){
+        int res = M[i-1][j-1] + (w1.charAt(i-1) == w2.charAt(j-1) ? 0 : 1);
+        int deleteLetter = M[i-1][j] + 1;
+        if (deleteLetter < res){
+          res = deleteLetter;
+        }
+        int addletter = M[i][j-1] + 1;
+        if (addletter < res){
+          res = addletter;
+        }
+        M[i][j] = res;
+      }
+    }
+    return M[w1len][w2len];
   }
 
   int distance(String w1, String w2) {
