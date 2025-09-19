@@ -16,7 +16,9 @@ public class ClosestWords {
     if (w2len == 0){
       return w1len;
     }
+    int min;
     for (int i = index+1; i <= w1len; i++){
+      min = Integer.MAX_VALUE - 1;
       for (int j = 1; j <= w2len; j++){
         int res = M[i-1][j-1] + (w1.charAt(i-1) == w2.charAt(j-1) ? 0 : 1);
         int deleteLetter = M[i-1][j] + 1;
@@ -27,7 +29,13 @@ public class ClosestWords {
         if (addletter < res){
           res = addletter;
         }
+        if (res < min){
+          min = res;
+        }
         M[i][j] = res;
+      }
+      if (min > closestDistance && closestDistance != -1){
+        return w1len;
       }
     }
     return M[w1len][w2len];
@@ -65,6 +73,7 @@ public class ClosestWords {
         if (previouString.charAt(i) != s.charAt(i)){
           break;
         }
+        i++;
       }
       int dist = distance(w, s, i);
       // System.out.println("d(" + w + "," + s + ")=" + dist);
