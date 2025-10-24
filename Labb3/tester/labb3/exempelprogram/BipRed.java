@@ -7,26 +7,53 @@
  *
  * @author: Per Austrin
  */
+import java.util.ArrayList;
+import java.util.List;
 
 public class BipRed {
     Kattio io;
+
+
+	private class FlowGraph{
+		private int [][] edges;
+		private int v;
+
+		private FlowGraph(int[][] edges, int v){
+			this.edges = edges;
+			this.v = v;
+
+		}
+	}
     
-    void readBipartiteGraph() {
+    FlowGraph readBipartiteGraph() {
 	// Läs antal hörn och kanter
 	int x = io.getInt();
 	int y = io.getInt();
 	int e = io.getInt();
 	
+	int[][] edges = new int[e+x+y][2];
 	// Läs in kanterna
 	for (int i = 0; i < e; ++i) {
 	    int a = io.getInt();
 	    int b = io.getInt();
+		edges[i][0] = a+1;
+		edges[i][1] = b+1;
 	}
+	for (int i = 0; i < x; ++i){
+		edges[i+e][0] = 1;
+		edges[i+e][1] = 2+i;
+	}
+
+	for (int i = 0; i < y; ++i){
+		edges[i+e][0] = 2+x+y;
+		edges[i+e][1] = 2+x+i;
+	}
+	return new FlowGraph(edges, x+y+2);
     }
     
     
-    void writeFlowGraph() {
-	int v = 23, e = 0, s = 1, t = 2;
+    void writeFlowGraph(FlowGraph f) {
+	int v = f.v, e = 0, s = 1, t = 2;
 	
 	// Skriv ut antal hörn och kanter samt källa och sänka
 	io.println(v);
@@ -98,7 +125,9 @@ public class BipRed {
     }
     
     public static void main(String args[]) {
-	new BipRed();
+	BipRed bipRed = new BipRed();
+	FlowGraph flowGraph = bipRed.readBipartiteGraph();
+	bipRed.writeFlowGraph(flowGraph);
     }
 }
 
