@@ -19,59 +19,65 @@ public class MaxFlow {
 		}
 	}
 
-    private class GrannLista{
-        int start;
-        Edge [] edges;
-        List<Edge>[] lista;
-    }
-
 
     private class Edge{
         int end;
-        int capacity;
+        int c;
+        int f;
+        int cf;
+        Edge edge2;
+
+        private Edge(int end, int c, int f, int cf){
+            this.end = end;
+            this.c = c;
+            this.f = f;
+            this.cf = cf;
+        }
+
+        private void addEdge(Edge edge){
+            this.edge2 = edge;
+        }
     }
 
-
-    	private class Edge{
-		private int start;
-		private int end;
-        private int capacity;
-
-
-		private Edge(int start, int end, int capacity){
-			this.start = start;
-			this.end = end;
-            this.capacity = capacity;
-		}
-	}
     
 
 
-    void readFlowGraph() {
+    List<Edge>[] readFlowGraph() {
 	int v = io.getInt();
 	int s = io.getInt();
 	int t = io.getInt();
 	int e = io.getInt();
+    List<Edge>[] grannListor = (List<Edge>[]) new ArrayList[v];
 
-    Edge[] edges = new Edge[e];
+    for (int i = 0; i < v; i++) {
+    grannListor[i] = new ArrayList<>();
+    }
+    
 	int index = 0;
 	for (int i = 0; i < e; ++i) {
 	    // Flöde f från a till b
 	    int a = io.getInt();
 	    int b = io.getInt();
 	    int c = io.getInt();
-        Edge edge = new Edge(a,b,c);
-        edges[i] = edge;
-
+        Edge edge = new Edge(b,c, 0, c);
+        grannListor[a].add(edge);
+        Edge edge2 = new Edge(a,c,0,c);
+        grannListor[b].add(edge2);
+        grannListor[a].getLast().addEdge(edge2);
+        grannListor[b].getLast().addEdge(edge);
 	}
-
-    FlowGraph flowGraph = new FlowGraph(edges, )
+    return grannListor;
     }
 
+    void edmondKarp(List<Edge>[] c){    
+        
+    }
 
     MaxFlow(){
         io = new Kattio(System.in, System.out);
 
+        List<Edge>[] grannListor = readFlowGraph();
+        
     }
 
 }
