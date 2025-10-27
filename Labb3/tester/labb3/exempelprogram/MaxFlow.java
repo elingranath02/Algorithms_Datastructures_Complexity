@@ -76,8 +76,27 @@ public class MaxFlow {
         return flowGraph;
     }
 
-    void edmondKarp(List<Edge>[] c){    
-        
+    int edmondKarp(FlowGraph graph){
+		List<Edge> edges;
+		int totFlow = 0;
+		while((edges = BFS(graph)) != null){
+            int min = Integer.MAX_VALUE;
+
+            for(Edge edge:edges){
+                if(edge.cf < min){
+                    min = edge.cf;
+                }
+            }
+			totFlow += min;
+            for(Edge edge: edges){
+                edge.f += min;
+                edge.edge2.f -= min;
+                edge.cf = edge.c - edge.f;
+                edge.edge2.cf = edge.edge2.c - edge.edge2.f;
+            }
+
+        }
+		return totFlow;
     }
 
     List<Edge> BFS(FlowGraph flowGraph){
@@ -88,6 +107,33 @@ public class MaxFlow {
         while (queue.isEmpty()==false){
             int node = queue.remove();
         } 
+    }
+
+	void writeMaxFlowSolution(FlowGraph graph, int totFlow) {
+
+	List<Edge> posEdges = new ArrayList<>();
+
+	for(int i = 0; i < graph.grannListor.length; i++){
+		List<Edge> grannLista = graph.grannListor[i];
+		for(int j = 0; j < grannLista.size(); j++){
+			Edge e = grannLista.get(j);
+			if(e.f > 0 && i < e.end){
+				posEdges.add(e);
+			}
+
+		}
+
+	}
+
+	io.println(graph.v);
+	io.println(graph.s + " " + graph.t + " " + totFlow);
+	io.println(posEdges.size());
+
+	for (int i = 0; i < posEdges.size(); ++i) {
+	    int a = posEdges.get(i).edge2.end, b = posEdges.get(i).end;
+	    io.println(a + " " + b + " " + posEdges.get(i).f);
+	}
+	
     }
 
     MaxFlow(){
