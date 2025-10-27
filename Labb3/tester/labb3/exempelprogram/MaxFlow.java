@@ -80,9 +80,14 @@ public class MaxFlow {
         
     }
 
-    List<Edge> BFS(List<Edge>[] c, int root, int end;){
-        Queue<Edge> queue = new ArrayDeque<>();
-        int[] visited = new int[]
+    List<Edge> BFS(FlowGraph flowGraph){
+        Queue<Integer> queue = new ArrayDeque<>();
+        boolean[] visited = new boolean[flowGraph.v];
+        visited[flowGraph.s] = true;
+        queue.add(flowGraph.s);
+        while (queue.isEmpty()==false){
+            int node = queue.remove();
+        } 
     }
 
     MaxFlow(){
