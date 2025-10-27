@@ -66,11 +66,21 @@ public class MaxFlow {
     	    int b = io.getInt();
     	    int c = io.getInt();
             Edge edge = new Edge(b,c, 0, c);
-            grannListor[a].add(edge);
-            Edge edge2 = new Edge(a,c,0,c);
-            grannListor[b].add(edge2);
-            grannListor[a].getLast().addEdge(edge2);
-            grannListor[b].getLast().addEdge(edge);
+            boolean reverse = false;
+            for (int j = 0; j < grannListor[b].size(); j++) {
+                if (grannListor[a].get(j).end == a){
+                    grannListor[a].set(j, edge);
+                    reverse = true;
+                    break;
+                }
+            }
+            if (!reverse){
+                grannListor[a].add(edge);
+                Edge edge2 = new Edge(a,c,0,0);
+                grannListor[b].add(edge2);
+                grannListor[a].getLast().addEdge(edge2);
+                grannListor[b].getLast().addEdge(edge);
+            }
     	}
         FlowGraph flowGraph = new FlowGraph(grannListor, v, s, t, e);
         return flowGraph;
@@ -80,14 +90,29 @@ public class MaxFlow {
         
     }
 
-    List<Edge> BFS(FlowGraph flowGraph){
+    List<Edge> bfs(FlowGraph flowGraph){
         Queue<Integer> queue = new ArrayDeque<>();
-        boolean[] visited = new boolean[flowGraph.v];
-        visited[flowGraph.s] = true;
+        Edge[] parent = new Edge[flowGraph.v+1];
+        parent[flowGraph.s] = null;
         queue.add(flowGraph.s);
         while (queue.isEmpty()==false){
             int node = queue.remove();
-        } 
+            if (((int)node) == flowGraph.t){
+                break;
+            }
+            for (Edge edge : flowGraph.grannListor[node]) {
+                if(parent[edge.end] == null){
+                    parent[edge.end] = edge;
+                }
+            }
+        }
+        List<Edge> edges = new ArrayList<>();
+        Edge edge = parent[flowGraph.t];
+        while (edge != null){
+            edges.add(parent[edge.end]);
+            edge = parent[edge.end];
+        }
+        return edges;
     }
 
     MaxFlow(){
