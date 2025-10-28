@@ -1,5 +1,6 @@
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 
@@ -27,13 +28,15 @@ public class MaxFlow {
 
 
     private class Edge{
+        int start;
         int end;
         int c;
         int f;
         int cf;
         Edge edge2;
 
-        private Edge(int end, int c, int f, int cf){
+        private Edge(int start, int end, int c, int f, int cf){
+            this.start = start;
             this.end = end;
             this.c = c;
             this.f = f;
@@ -65,7 +68,7 @@ public class MaxFlow {
     	    int a = io.getInt();
     	    int b = io.getInt();
     	    int c = io.getInt();
-            Edge edge = new Edge(b,c, 0, c);
+            Edge edge = new Edge(a,b,c, 0, c);
             boolean reverse = false;
             for (int j = 0; j < grannListor[b].size(); j++) {
                 if (grannListor[a].get(j).end == a){
@@ -76,7 +79,7 @@ public class MaxFlow {
             }
             if (!reverse){
                 grannListor[a].add(edge);
-                Edge edge2 = new Edge(a,c,0,0);
+                Edge edge2 = new Edge(b,a,c,0,0);
                 grannListor[b].add(edge2);
                 grannListor[a].getLast().addEdge(edge2);
                 grannListor[b].getLast().addEdge(edge);
@@ -112,26 +115,33 @@ public class MaxFlow {
     List<Edge> bfs(FlowGraph flowGraph){
         Queue<Integer> queue = new ArrayDeque<>();
         Edge[] parent = new Edge[flowGraph.v+1];
-        parent[flowGraph.s] = null;
+        boolean[] visited = new boolean[flowGraph.v+1];
         queue.add(flowGraph.s);
+        visited[flowGraph.s] = true;
         while (queue.isEmpty()==false){
             int node = queue.remove();
             if (((int)node) == flowGraph.t){
                 break;
             }
             for (Edge edge : flowGraph.grannListor[node]) {
-                if(parent[edge.end] == null){
+                if(!visited[edge.end] && edge.cf > 0){
                     parent[edge.end] = edge;
+                    visited[edge.end] = true;
+                    queue.add(edge.end);
                 }
             }
         }
-        List<Edge> edges = new ArrayList<>();
-        Edge edge = parent[flowGraph.t];
-        while (edge != null){
-            edges.add(parent[edge.end]);
-            edge = parent[edge.end];
+        if (!visited[flowGraph.t]){
+            return null;
         }
-        return edges;
+        List<Edge> path = new ArrayList<>();
+        Edge edge = parent[flowGraph.t];
+        while (edge!=null){
+            path.add(edge);
+            edge = parent[edge.start];
+        }
+        Collections.reverse(path);
+        return path;
     }
 
 	void writeMaxFlowSolution(FlowGraph graph, int totFlow) {
