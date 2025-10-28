@@ -152,7 +152,7 @@ public class MaxFlow {
 		List<Edge> grannLista = graph.grannListor[i];
 		for(int j = 0; j < grannLista.size(); j++){
 			Edge e = grannLista.get(j);
-			if(e.f > 0 && i < e.end){
+			if(e.f > 0){
 				posEdges.add(e);
 			}
 
