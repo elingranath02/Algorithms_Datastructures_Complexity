@@ -62,28 +62,19 @@ public class MaxFlow {
         grannListor[i] = new ArrayList<>();
         }
 
-    	int index = 0;
     	for (int i = 0; i < e; ++i) {
     	    // Flöde f från a till b
     	    int a = io.getInt();
     	    int b = io.getInt();
     	    int c = io.getInt();
             Edge edge = new Edge(a,b,c, 0, c);
-            boolean reverse = false;
-            for (int j = 0; j < grannListor[b].size(); j++) {
-                if (grannListor[b].get(j).end == a){
-                    grannListor[b].set(j, edge);
-                    reverse = true;
-                    break;
-                }
-            }
-            if (!reverse){
-                grannListor[a].add(edge);
-                Edge edge2 = new Edge(b,a,c,0,0);
-                grannListor[b].add(edge2);
-                grannListor[a].getLast().addEdge(edge2);
-                grannListor[b].getLast().addEdge(edge);
-            }
+			Edge reverse = new Edge(b,a,0,0,0);
+			edge.addEdge(reverse);
+			reverse.addEdge(edge);
+
+			grannListor[a].add(edge);
+			grannListor[b].add(reverse);
+            
     	}
         FlowGraph flowGraph = new FlowGraph(grannListor, v, s, t, e);
         return flowGraph;
