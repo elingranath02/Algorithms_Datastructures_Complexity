@@ -56,9 +56,9 @@ public class MaxFlow {
     	int s = io.getInt();
     	int t = io.getInt();
     	int e = io.getInt();
-        List<Edge>[] grannListor = (List<Edge>[]) new ArrayList[v];
+        List<Edge>[] grannListor = (List<Edge>[]) new ArrayList[v+1];
 
-        for (int i = 0; i < v; i++) {
+        for (int i = 0; i < v+1; i++) {
         grannListor[i] = new ArrayList<>();
         }
 
@@ -71,8 +71,8 @@ public class MaxFlow {
             Edge edge = new Edge(a,b,c, 0, c);
             boolean reverse = false;
             for (int j = 0; j < grannListor[b].size(); j++) {
-                if (grannListor[a].get(j).end == a){
-                    grannListor[a].set(j, edge);
+                if (grannListor[b].get(j).end == a){
+                    grannListor[b].set(j, edge);
                     reverse = true;
                     break;
                 }
@@ -159,7 +159,7 @@ public class MaxFlow {
 		}
 
 	}
-
+    System.err.println("test");
 	io.println(graph.v);
 	io.println(graph.s + " " + graph.t + " " + totFlow);
 	io.println(posEdges.size());
@@ -168,6 +168,8 @@ public class MaxFlow {
 	    int a = posEdges.get(i).edge2.end, b = posEdges.get(i).end;
 	    io.println(a + " " + b + " " + posEdges.get(i).f);
 	}
+    io.flush();
+    io.close();
 	
     }
 
