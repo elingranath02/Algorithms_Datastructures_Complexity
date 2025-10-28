@@ -92,7 +92,7 @@ public class MaxFlow {
     int edmondKarp(FlowGraph graph){
 		List<Edge> edges;
 		int totFlow = 0;
-		while((edges = BFS(graph)) != null){
+		while((edges = bfs(graph)) != null){
             int min = Integer.MAX_VALUE;
 
             for(Edge edge:edges){
@@ -175,7 +175,15 @@ public class MaxFlow {
         io = new Kattio(System.in, System.out);
 
         FlowGraph flowGraph = readFlowGraph();
+
+        int totFlow = edmondKarp(flowGraph);
+        
+        writeMaxFlowSolution(flowGraph, totFlow);
+        
         
     }
 
+    public static void main(String[] args) {
+        new MaxFlow();
+    }
 }
