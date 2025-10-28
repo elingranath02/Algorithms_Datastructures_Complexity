@@ -165,7 +165,7 @@ public class MaxFlow {
 	io.println(posEdges.size());
 
 	for (int i = 0; i < posEdges.size(); ++i) {
-	    int a = posEdges.get(i).edge2.end, b = posEdges.get(i).end;
+	    int a = posEdges.get(i).start, b = posEdges.get(i).end;
 	    io.println(a + " " + b + " " + posEdges.get(i).f);
 	}
     io.flush();
