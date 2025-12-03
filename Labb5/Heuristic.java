@@ -13,10 +13,12 @@ import java.util.Set;
             int n = io.getInt();
             int s = io.getInt();
             int k = io.getInt();
+            int[] nrOfActors = new int[n+1];
 
             List<Integer>[] rolesWithActors =  (List<Integer>[]) new List[n+1];
             for (int i = 1; i <= n; i++){
                 int m = io.getInt();
+                nrOfActors[i] = m;
                 rolesWithActors[i] = new ArrayList<>();
                 for (int j = 1; j<=m; j++){
                     int p = io.getInt();
@@ -24,6 +26,21 @@ import java.util.Set;
                 }
                 rolesWithActors[i].sort(null);
             }
+
+            int[] rolesIndexOrder = new int[n+1];
+
+            for(int i = 1; i < n+1; i++){
+                int minIndex = i;
+
+                for(int j = 1; j < n+1; j++){
+                    if(nrOfActors[j] < nrOfActors[minIndex]){
+                        minIndex = j;
+                    }
+                }
+                nrOfActors[minIndex] = Integer.MAX_VALUE;
+                rolesIndexOrder[i] = minIndex;
+            }
+
 
             Set<Integer>[] rolesEdges =  (Set<Integer>[]) new HashSet[n+1];
             for (int i = 0; i < n+1; i++) {
@@ -44,15 +61,51 @@ import java.util.Set;
                 }
             }
 
+            ArrayList<Integer> rolesActorOne = new ArrayList<Integer>();
+            ArrayList<Integer> rolesActorTwo = new ArrayList<Integer>();
+
+
+            for(int i = 1; i < rolesWithActors.length; i++){
+                if(rolesWithActors[i].contains(1)){
+                    rolesActorOne.add(i);
+                }
+                if(rolesWithActors[i].contains(2)){
+                    rolesActorTwo.add(i);
+                }
+            }
+
+            int roleActorOne = -1;
+            int roleActorTwo = -1;
+
+            for(int role1 : rolesActorOne){
+
+                for(int role2 : rolesActorTwo){
+                    if(!rolesEdges[role1].contains(role2)){
+                        roleActorOne = role1;
+                        roleActorTwo = role2;
+                        break;
+                    }
+                }
+                if(roleActorOne > -1 && roleActorTwo > -1){
+                    break;
+                }
+
+            }
+
             int[] finalRoles = new int[n+1];
+            finalRoles[roleActorOne] = 1;
+            finalRoles[roleActorTwo] = 2;
 
             boolean hasActor = false;
             int superActor = k+1;
             for(int i = 1; i < n+1; i++){
-                for(int j = 0; j < rolesWithActors[i].size(); j++){
+                if(finalRoles[rolesIndexOrder[i]] != 0){
+                    continue;
+                }
+                for(int j = 0; j < rolesWithActors[rolesIndexOrder[i]].size(); j++){
                     hasActor = false;
-                    int actor = rolesWithActors[i].get(j);
-                    for(Integer role : rolesEdges[i]){
+                    int actor = rolesWithActors[rolesIndexOrder[i]].get(j);
+                    for(Integer role : rolesEdges[rolesIndexOrder[i]]){
                         if(finalRoles[role] == actor){
                             hasActor = true;
                             break;
@@ -67,12 +120,12 @@ import java.util.Set;
                         }
                     }
                     if(hasActor == false){
-                        finalRoles[i] = actor;
+                        finalRoles[rolesIndexOrder[i]] = actor;
                         break;
                     }
 
-                    if(j == rolesWithActors[i].size()-1){
-                        finalRoles[i] = superActor;
+                    if(j == rolesWithActors[rolesIndexOrder[i]].size()-1){
+                        finalRoles[rolesIndexOrder[i]] = superActor;
                         superActor++;
                     }
 
@@ -89,31 +142,22 @@ import java.util.Set;
             }
             
             io.println(totalActors);
-            //System.out.println(totalActors);
 
             for(int i = 1; i < finalActors.length; i++){
                 if(finalActors[i] != null){
                     io.print(i + " " + finalActors[i].size());
-                    //System.out.print(i + " " + finalActors[i].size());
                     for (Integer roles: finalActors[i]) {
                         io.print(" " + roles);
-                        //System.out.print(" " + roles);
                     }
                     io.println("");
-                    //System.out.println("");
                     
                 }
             }
-            
 
             io.flush();
             io.close();
         }
 
-        // public static void checkActorPermission(){
-
-
-        // }
 
         public static void main(String [] args){
             new Heuristic();
